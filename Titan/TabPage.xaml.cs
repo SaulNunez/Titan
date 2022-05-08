@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Titan.Ed;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -25,6 +26,24 @@ namespace Titan
         public TabPage()
         {
             this.InitializeComponent();
+            Direction.TextChanged += Direction_TextChanged;
+        }
+
+        private void Direction_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(!Uri.IsWellFormedUriString(Direction.Text, UriKind.Absolute))
+            {
+                return;
+            }
+
+            if (!Direction.Text.StartsWith("gemini://"))
+            {
+                Direction.TextChanged -= Direction_TextChanged;
+                Direction.Text = $"gemini://{Direction.Text}";
+                Direction.TextChanged += Direction_TextChanged;
+            }
+
+            Content.Text = GeminiPetition.Fetch(Direction.Text);
         }
     }
 }

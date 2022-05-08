@@ -119,9 +119,13 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ed\GeminiPetition.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Ed\Models\GeminiResponse.cs" />
+    <Compile Include="Ed\Models\Body\TextElement.cs" />
+    <Compile Include="Ed\Models\Body\LinkElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TabPage.xaml.cs">
       <DependentUpon>TabPage.xaml</DependentUpon>
