@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Titan.Ed;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -43,7 +44,19 @@ namespace Titan
                 Direction.TextChanged += Direction_TextChanged;
             }
 
-            Content.Text = GeminiPetition.Fetch(Direction.Text);
+            var response = GeminiPetition.Fetch(Direction.Text);
+            if (response.IsSuccess)
+            {
+                Content.Text = response.Body;
+            }
+
+            if (response.IsRedirect)
+            {
+                Direction.Text = response.Meta;
+            }
+
+            var messageDialog = new MessageDialog(response.ToString());
+            messageDialog.ShowAsync();
         }
     }
 }

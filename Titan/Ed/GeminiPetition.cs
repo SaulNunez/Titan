@@ -14,12 +14,12 @@ namespace Titan.Ed
     public static class GeminiPetition
     {
         public static readonly int DEFAULT_GEMINI_PORT = 1965;
-        public static string Fetch(string url)
+        public static GeminiResponse Fetch(string url)
         {
             byte[] sendBuffer = Encoding.UTF8.GetBytes($"{url}\r\n");
 
-            try
-            {
+            //try
+            //{
                 var uri = new Uri(url);
                 using (var client = new TcpClient(uri.Authority, DEFAULT_GEMINI_PORT))
                 {
@@ -28,8 +28,6 @@ namespace Titan.Ed
                     {
                         stream.AuthenticateAsClient(url);
                         stream.Write(sendBuffer, 0, sendBuffer.Length);
-
-                        var responseObj = new GeminiResponse();
 
                         if (stream.CanRead)
                         {
@@ -48,18 +46,18 @@ namespace Titan.Ed
                                 }
                             } while (bytesRead != 0);
 
-                            return responseContent.ToString();
+                            return new GeminiResponse(responseContent.ToString());
                         }
 
-                        return string.Empty;
+                        throw new Exception("Connection had a problem");
                     }
                 }
-            } catch (Exception ex)
-            {
-                var messageDialog = new MessageDialog(ex.Message);
-                messageDialog.ShowAsync();
-                return string.Empty;
-            }
+            //} catch (Exception ex)
+            //{
+            //    var messageDialog = new MessageDialog(ex.Message);
+            //    messageDialog.ShowAsync();
+            //    throw ex;
+            //}
         }
 
         public static bool ValidateServerCertificate(object sender, X509Certificate certificate,
