@@ -54,9 +54,6 @@ namespace Titan
             {
                 Direction.Text = response.Meta;
             }
-
-            var messageDialog = new MessageDialog(response.ToString());
-            messageDialog.ShowAsync();
         }
     }
 }
