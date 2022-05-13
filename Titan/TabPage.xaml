@@ -11,13 +11,22 @@
 
     <Grid>
         <StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <AppBarButton Icon="Back" Label="Back" LabelPosition="Default"/>
-                <AppBarButton Icon="Forward" Label="Forward" LabelPosition="Default"/>
-                <TextBox HorizontalAlignment="Center" x:Name="Direction" AcceptsReturn="True" />
-                <AppBarButton Icon="Favorite" Label="Favorite"/>
+            <CommandBar DefaultLabelPosition="Collapsed">
+                <AppBarButton Icon="Back" Label="Back"/>
+                <AppBarButton Icon="Forward" Label="Forward"/>
+                <AppBarElementContainer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="32,0,32,0">
+                    <TextBox HorizontalAlignment="Center" x:Name="Direction" AcceptsReturn="True" />
+                </AppBarElementContainer>
+                <AppBarElementContainer>
+                    <muxc:SplitButton Content="Favorites">
+                        <muxc:SplitButton.Flyout>
+                            <MenuFlyout Placement="RightEdgeAlignedTop">
+                            </MenuFlyout>
+                        </muxc:SplitButton.Flyout>
+                    </muxc:SplitButton>
+                </AppBarElementContainer>
                 <AppBarButton Icon="Share" Label="Share" />
-            </StackPanel>
+            </CommandBar>
             <muxc:TwoPaneView
                 Grid.Row="1"
                 MinWideModeWidth="959"
@@ -30,7 +39,11 @@
                 </muxc:TwoPaneView.Pane1>
                 <muxc:TwoPaneView.Pane2>
                     <Grid>
-                        <TextBlock x:Name="Content" />
+                        <ScrollViewer
+                            HorizontalScrollBarVisibility="Auto" 
+                            VerticalScrollBarVisibility="Auto">
+                            <RichTextBlock x:Name="Content"/>
+                        </ScrollViewer>
                     </Grid>
                 </muxc:TwoPaneView.Pane2>
             </muxc:TwoPaneView>

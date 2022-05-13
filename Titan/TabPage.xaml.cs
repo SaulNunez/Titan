@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -24,6 +25,8 @@ namespace Titan
     /// </summary>
     public sealed partial class TabPage : Page
     {
+        char[] delimiters = { ' ', '\t' };
+
         public TabPage()
         {
             this.InitializeComponent();
@@ -47,7 +50,89 @@ namespace Titan
             var response = GeminiPetition.Fetch(Direction.Text);
             if (response.IsSuccess)
             {
-                Content.Text = response.Body;
+                Content.Blocks.Clear();
+                foreach(var l in response.Body.Split("\r\n"))
+                {
+                    if (l.StartsWith("=>"))
+                    {
+                        var sections = l.Split(delimiters);
+                        var hyperlink = new Hyperlink();
+                        if (Uri.IsWellFormedUriString(sections[1], UriKind.Absolute))
+                        {
+                            hyperlink.NavigateUri = new Uri(sections[1]);
+                        }
+                        else if (Uri.IsWellFormedUriString(sections[1], UriKind.Relative))
+                        {
+                            hyperlink.NavigateUri = new Uri(new Uri(Direction.Text), sections[1]);
+                        }
+                        var run = new Run();
+                        if (sections.Length > 2)
+                        {
+                            run.Text = sections[2];
+                        }
+                        else
+                        {
+                            run.Text = sections[1];
+                        }
+
+                        hyperlink.Inlines.Add(run);
+
+                        var paragraph = new Paragraph();
+                        paragraph.Inlines.Add(hyperlink);
+                        Content.Blocks.Add(paragraph);
+                    }
+                    else if (l.StartsWith("###"))
+                    {
+                        var paragraph = new Paragraph();
+                        var run = new Run();
+                        run.Text = l.Substring(3).TrimStart();
+                        paragraph.Inlines.Add(run);
+                        Content.Blocks.Add(paragraph);
+                    }
+                    else if (l.StartsWith("##"))
+                    {
+                        var paragraph = new Paragraph();
+                        var run = new Run();
+                        run.Text = l.Substring(2).TrimStart();
+                        paragraph.Inlines.Add(run);
+                        Content.Blocks.Add(paragraph);
+                    }
+                    else if (l.StartsWith("#"))
+                    {
+                        var paragraph = new Paragraph();
+                        var run = new Run();
+                        run.Text = l.Substring(1).TrimStart();
+                        paragraph.Inlines.Add(run);
+                        Content.Blocks.Add(paragraph);
+                    }
+                    else if (l.StartsWith('>'))
+                    {
+                        var paragraph = new Paragraph();
+                        var span = new Span();
+                        var run = new Run();
+                        run.Text = l;
+                        span.Inlines.Add(run);
+                        paragraph.Inlines.Add(span);
+                        Content.Blocks.Add(paragraph);
+                    }
+                    else if (l.StartsWith('*'))
+                    {
+                        var run = new Run();
+                        run.Text = $"\u2022 {l}";
+
+                        var paragraph = new Paragraph();
+                        paragraph.Inlines.Add(run);
+                        Content.Blocks.Add(paragraph);
+                    }
+                    else
+                    {
+                        var paragraph = new Paragraph();
+                        var run = new Run();
+                        run.Text = l;
+                        paragraph.Inlines.Add(run);
+                        Content.Blocks.Add(paragraph);
+                    }
+                }
             }
 
             if (response.IsRedirect)
