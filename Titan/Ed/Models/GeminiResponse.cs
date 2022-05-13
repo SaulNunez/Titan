@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Runtime.Serialization;
+using System.Text;
 
 namespace Titan.Models
 {
@@ -31,11 +32,11 @@ namespace Titan.Models
             }
         }
 
-        public string Status { get; set; }
+        public string Status { get; private set; }
         /// <summary>
         /// Is a UTF-8 encoded string of maximum length 1024 bytes, whose meaning is <STATUS> dependent
         /// </summary>
-        public string Meta { get; set; }
+        public string Meta { get; private set; }
 
         public string MimeType { get
             {
@@ -44,7 +45,7 @@ namespace Titan.Models
             }
         }
 
-        public string Body { get; set; } = string.Empty;
+        public string Body { get; private set; } = string.Empty;
 
         /// <summary>
         /// Returns true if status code starts with 3
