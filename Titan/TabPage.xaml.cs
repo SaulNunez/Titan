@@ -51,7 +51,11 @@ namespace Titan
             if (response.IsSuccess)
             {
                 Content.Blocks.Clear();
-                foreach(var l in response.Body.Split("\r\n"))
+                var items = response.Body.Split("\n");
+                //var msgBox = new MessageDialog($"Size: {items.Count()}");
+                //msgBox.ShowAsync();
+
+                foreach (var l in items)
                 {
                     if (l.StartsWith("=>"))
                     {
