@@ -59,7 +59,7 @@ namespace Titan
                 {
                     if (l.StartsWith("=>"))
                     {
-                        var sections = l.Split(delimiters);
+                        var sections = l.Split(delimiters, 3);
                         var hyperlink = new Hyperlink();
                         if (Uri.IsWellFormedUriString(sections[1], UriKind.Absolute))
                         {
