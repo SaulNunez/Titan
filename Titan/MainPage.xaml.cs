@@ -51,6 +51,27 @@ namespace Titan
             CustomDragRegion.Height = ShellTitlebarInset.Height = sender.Height;
         }
 
+        // Add a new Tab to the TabView
+        private void Tabs_AddTabButtonClick(TabView sender, object _)
+        {
+            var newTab = new TabViewItem();
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
+            newTab.Header = "New Document";
+
+            // The Content of a TabViewItem is often a frame which hosts a page.
+            Frame frame = new Frame();
+            newTab.Content = frame;
+            frame.Navigate(typeof(TabPage));
+
+            sender.TabItems.Add(newTab);
+        }
+
+        // Remove the requested tab from the TabView
+        private void Tabs_TabCloseRequested(TabView sender, TabViewTabCloseRequestedEventArgs args)
+        {
+            sender.TabItems.Remove(args.Tab);
+        }
+
         private void NewTabKeyboardAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             // Create new tab.

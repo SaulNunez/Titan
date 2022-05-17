@@ -8,7 +8,9 @@
     x:Class="Titan.MainPage"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <muxc:TabView x:Name="TabRoot">
+    <muxc:TabView x:Name="TabRoot" 
+                  AddTabButtonClick="Tabs_AddTabButtonClick"
+                  TabCloseRequested="Tabs_TabCloseRequested">
         <muxc:TabView.KeyboardAccelerators>
             <KeyboardAccelerator Key="T" Modifiers="Control" Invoked="NewTabKeyboardAccelerator_Invoked" />
             <KeyboardAccelerator Key="W" Modifiers="Control" Invoked="CloseSelectedTabKeyboardAccelerator_Invoked" />
