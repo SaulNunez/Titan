@@ -7,8 +7,10 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     x:Class="Titan.MainPage"
     mc:Ignorable="d"
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-    <muxc:TabView x:Name="TabRoot" 
+    <muxc:TabView x:Name="TabRoot"
+                  Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
                   AddTabButtonClick="Tabs_AddTabButtonClick"
                   TabCloseRequested="Tabs_TabCloseRequested">
         <muxc:TabView.KeyboardAccelerators>
