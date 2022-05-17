@@ -11,22 +11,19 @@
 
     <Grid>
         <StackPanel>
-            <CommandBar DefaultLabelPosition="Collapsed">
-                <AppBarButton Icon="Back" Label="Back"/>
-                <AppBarButton Icon="Forward" Label="Forward"/>
-                <AppBarElementContainer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="32,0,32,0">
-                    <TextBox HorizontalAlignment="Center" x:Name="Direction" AcceptsReturn="True" />
-                </AppBarElementContainer>
-                <AppBarElementContainer>
-                    <muxc:SplitButton Content="Favorites">
+            <RelativePanel>
+                <AppBarButton x:Name="BackButton" Icon="Back" Label="Back" LabelPosition="Collapsed"/>
+                <AppBarButton Icon="Forward" Label="Forward" RelativePanel.RightOf="BackButton" x:Name="ForwardButton" LabelPosition="Collapsed"/>
+                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="ForwardButton" RelativePanel.LeftOf="FavoriteButton"/>
+                <muxc:SplitButton Content="Favorites" RelativePanel.LeftOf="ShareButton" x:Name="FavoriteButton">
                         <muxc:SplitButton.Flyout>
                             <MenuFlyout Placement="RightEdgeAlignedTop">
                             </MenuFlyout>
                         </muxc:SplitButton.Flyout>
                     </muxc:SplitButton>
-                </AppBarElementContainer>
-                <AppBarButton Icon="Share" Label="Share" />
-            </CommandBar>
+
+                    <AppBarButton Icon="Share" Label="Share" x:Name="ShareButton" RelativePanel.AlignRightWithPanel="True" LabelPosition="Collapsed"/>
+            </RelativePanel>
             <muxc:TwoPaneView
                 Grid.Row="1"
                 MinWideModeWidth="959"
