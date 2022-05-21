@@ -12,8 +12,10 @@
     <Grid>
         <StackPanel>
             <RelativePanel>
-                <AppBarButton x:Name="BackButton" Icon="Back" Label="Back" LabelPosition="Collapsed"/>
-                <AppBarButton Icon="Forward" Label="Forward" RelativePanel.RightOf="BackButton" x:Name="ForwardButton" LabelPosition="Collapsed"/>
+                <AppBarButton x:Name="BackButton" Icon="Back" Label="Back" LabelPosition="Collapsed" 
+                              IsEnabled="{x:Bind model.canGoBack}"/>
+                <AppBarButton Icon="Forward" Label="Forward" RelativePanel.RightOf="BackButton" x:Name="ForwardButton" LabelPosition="Collapsed" 
+                              IsEnabled="{x:Bind model.canGoForward}" />
                 <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="ForwardButton" RelativePanel.LeftOf="FavoriteButton"/>
                 <muxc:SplitButton Content="Favorites" RelativePanel.LeftOf="ShareButton" x:Name="FavoriteButton">
                         <muxc:SplitButton.Flyout>
@@ -39,7 +41,7 @@
                         <ScrollViewer
                             HorizontalScrollBarVisibility="Auto" 
                             VerticalScrollBarVisibility="Auto">
-                            <RichTextBlock x:Name="Content"/>
+                            <RichTextBlock x:Name="Content"  />
                         </ScrollViewer>
                     </Grid>
                 </muxc:TwoPaneView.Pane2>

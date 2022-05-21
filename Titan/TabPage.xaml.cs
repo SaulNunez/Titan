@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Titan.Ed;
+using Titan.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Popups;
@@ -25,12 +26,26 @@ namespace Titan
     /// </summary>
     public sealed partial class TabPage : Page
     {
+        public Tab model = new Tab();
+
         char[] delimiters = { ' ', '\t' };
 
         public TabPage()
         {
             this.InitializeComponent();
             Direction.TextChanged += Direction_TextChanged;
+            BackButton.Click += BackButton_Click;
+            ForwardButton.Click += ForwardButton_Click;
+        }
+
+        private void ForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            model.GoForward();
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            model.GoBack();
         }
 
         private void Direction_TextChanged(object sender, TextChangedEventArgs e)
@@ -59,24 +74,25 @@ namespace Titan
                 {
                     if (l.StartsWith("=>"))
                     {
-                        var sections = l.Split(delimiters, 3);
+                        var sections = l.Substring(2).Split(delimiters, 3);
                         var hyperlink = new Hyperlink();
-                        if (Uri.IsWellFormedUriString(sections[1], UriKind.Absolute))
+                        if (Uri.IsWellFormedUriString(sections[0], UriKind.Absolute))
                         {
-                            hyperlink.NavigateUri = new Uri(sections[1]);
+                            hyperlink.NavigateUri = new Uri(sections[0]);
                         }
-                        else if (Uri.IsWellFormedUriString(sections[1], UriKind.Relative))
+                        else if (Uri.IsWellFormedUriString(sections[0], UriKind.Relative))
                         {
-                            hyperlink.NavigateUri = new Uri(new Uri(Direction.Text), sections[1]);
+                            hyperlink.NavigateUri = new Uri(new Uri(Direction.Text), sections[0]);
                         }
                         var run = new Run();
-                        if (sections.Length > 2)
+                        // Trim is used here, or there's a lot of empty space on links
+                        if (sections.Length > 1)
                         {
-                            run.Text = sections[2];
+                            run.Text = sections[1].Trim();
                         }
                         else
                         {
-                            run.Text = sections[1];
+                            run.Text = sections[0].Trim();
                         }
 
                         hyperlink.Inlines.Add(run);
