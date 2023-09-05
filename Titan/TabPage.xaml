@@ -13,10 +13,11 @@
         <StackPanel>
             <RelativePanel>
                 <AppBarButton x:Name="BackButton" Icon="Back" Label="Back" LabelPosition="Collapsed" 
-                              IsEnabled="{x:Bind model.canGoBack}"/>
+                              IsEnabled="{x:Bind viewModel.canGoBack}"/>
                 <AppBarButton Icon="Forward" Label="Forward" RelativePanel.RightOf="BackButton" x:Name="ForwardButton" LabelPosition="Collapsed" 
-                              IsEnabled="{x:Bind model.canGoForward}" />
-                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="ForwardButton" RelativePanel.LeftOf="FavoriteButton"/>
+                              IsEnabled="{x:Bind viewModel.canGoForward}" />
+                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="ForwardButton" RelativePanel.LeftOf="GoButton" />
+                <AppBarButton Icon="Forward" Label="Go"  RelativePanel.LeftOf="FavoriteButton" x:Name="GoButton" />
                 <muxc:SplitButton Content="Favorites" RelativePanel.LeftOf="ShareButton" x:Name="FavoriteButton">
                         <muxc:SplitButton.Flyout>
                             <MenuFlyout Placement="RightEdgeAlignedTop">

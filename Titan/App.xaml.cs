@@ -25,6 +25,8 @@ namespace Titan
     /// </summary>
     sealed partial class App : Application
     {
+        private MainPage mainPage;
+
         /// <summary>
         /// Inicializa el objeto de aplicación Singleton. Esta es la primera línea de código creado
         /// ejecutado y, como tal, es el equivalente lógico de main() o WinMain().
@@ -51,6 +53,7 @@ namespace Titan
                 // Crear un marco para que actúe como contexto de navegación y navegar a la primera página.
                 rootFrame = new Frame();
 
+                rootFrame.Navigated += RootFrame_Navigated;
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
@@ -76,6 +79,11 @@ namespace Titan
             }
 
             ExtendAcrylicIntoTitleBar();
+        }
+
+        private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            mainPage = e.Content as MainPage;
         }
 
         /// <summary>
@@ -107,8 +115,9 @@ namespace Titan
             if (args.Kind == ActivationKind.Protocol)
             {
                 ProtocolActivatedEventArgs eventArgs = args as ProtocolActivatedEventArgs;
-                // TODO: Handle URI activation
-                // The received URI is eventArgs.Uri.AbsoluteUri
+
+                mainPage.NavigateToUri(eventArgs.Uri);
+
             }
         }
 

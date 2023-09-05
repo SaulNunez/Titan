@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Titan.Ed;
+using Titan.Models;
 using Titan.ViewModels;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -26,7 +27,7 @@ namespace Titan
     /// </summary>
     public sealed partial class TabPage : Page
     {
-        public Tab model = new Tab();
+        public TabViewModel viewModel = new TabViewModel();
 
         char[] delimiters = { ' ', '\t' };
 
@@ -36,21 +37,28 @@ namespace Titan
             Direction.TextChanged += Direction_TextChanged;
             BackButton.Click += BackButton_Click;
             ForwardButton.Click += ForwardButton_Click;
+            GoButton.Click += GoButton_Click;
+            viewModel.pageContentChanged += Render;
+        }
+
+        private void GoButton_Click(object sender, RoutedEventArgs e)
+        {
+            Navigate();
         }
 
         private void ForwardButton_Click(object sender, RoutedEventArgs e)
         {
-            model.GoForward();
+            viewModel.GoForward();
         }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            model.GoBack();
+            viewModel.GoBack();
         }
 
-        private void Direction_TextChanged(object sender, TextChangedEventArgs e)
+        private void Navigate()
         {
-            if(!Uri.IsWellFormedUriString(Direction.Text, UriKind.Absolute))
+            if (!Uri.IsWellFormedUriString(Direction.Text, UriKind.Absolute))
             {
                 return;
             }
@@ -61,103 +69,108 @@ namespace Titan
                 Direction.Text = $"gemini://{Direction.Text}";
                 Direction.TextChanged += Direction_TextChanged;
             }
+        }
+        private void Direction_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            viewModel.LoadPage(Direction.Text);
+        }
 
-            var response = GeminiPetition.Fetch(Direction.Text);
-            if (response.IsSuccess)
+        private void Render(GeminiResponse req)
+        {
+            var control = Content;
+
+            control.Blocks.Clear();
+            var items = req.Body.Split("\n");
+
+            foreach (var l in items)
             {
-                Content.Blocks.Clear();
-                var items = response.Body.Split("\n");
-                //var msgBox = new MessageDialog($"Size: {items.Count()}");
-                //msgBox.ShowAsync();
-
-                foreach (var l in items)
+                if (l.StartsWith("=>"))
                 {
-                    if (l.StartsWith("=>"))
+                    var sections = l.Substring(2).Split(new char[] { ' ', '\t' }, 2);
+                    var hyperlink = new Hyperlink();
+                    if (Uri.IsWellFormedUriString(sections[0], UriKind.Absolute))
                     {
-                        var sections = l.Substring(2).Split(delimiters, 3);
-                        var hyperlink = new Hyperlink();
-                        if (Uri.IsWellFormedUriString(sections[0], UriKind.Absolute))
-                        {
-                            hyperlink.NavigateUri = new Uri(sections[0]);
-                        }
-                        else if (Uri.IsWellFormedUriString(sections[0], UriKind.Relative))
-                        {
-                            hyperlink.NavigateUri = new Uri(new Uri(Direction.Text), sections[0]);
-                        }
-                        var run = new Run();
-                        // Trim is used here, or there's a lot of empty space on links
-                        if (sections.Length > 1)
-                        {
-                            run.Text = sections[1].Trim();
-                        }
-                        else
-                        {
-                            run.Text = sections[0].Trim();
-                        }
-
-                        hyperlink.Inlines.Add(run);
-
-                        var paragraph = new Paragraph();
-                        paragraph.Inlines.Add(hyperlink);
-                        Content.Blocks.Add(paragraph);
+                        hyperlink.NavigateUri = new Uri(sections[0]);
                     }
-                    else if (l.StartsWith("###"))
+                    else if (Uri.IsWellFormedUriString(sections[0], UriKind.Relative))
                     {
-                        var paragraph = new Paragraph();
-                        var run = new Run();
-                        run.Text = l.Substring(3).TrimStart();
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
+                        //TODO: Link relative uri
+                        //hyperlink.NavigateUri = new Uri(new Uri(string.Empty), sections[0]);
                     }
-                    else if (l.StartsWith("##"))
+                    var run = new Run();
+                    // Trim is used here, or there's a lot of empty space on links
+                    if (sections.Length > 1)
                     {
-                        var paragraph = new Paragraph();
-                        var run = new Run();
-                        run.Text = l.Substring(2).TrimStart();
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
-                    }
-                    else if (l.StartsWith("#"))
-                    {
-                        var paragraph = new Paragraph();
-                        var run = new Run();
-                        run.Text = l.Substring(1).TrimStart();
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
-                    }
-                    else if (l.StartsWith('>'))
-                    {
-                        var paragraph = new Paragraph();
-                        var span = new Span();
-                        var run = new Run();
-                        run.Text = l;
-                        span.Inlines.Add(run);
-                        paragraph.Inlines.Add(span);
-                        Content.Blocks.Add(paragraph);
-                    }
-                    else if (l.StartsWith('*'))
-                    {
-                        var run = new Run();
-                        run.Text = $"\u2022 {l}";
-
-                        var paragraph = new Paragraph();
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
+                        run.Text = sections[1].Trim();
                     }
                     else
                     {
-                        var paragraph = new Paragraph();
-                        var run = new Run();
-                        run.Text = l;
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
+                        run.Text = sections[0].Trim();
                     }
-                }
-            }
 
-            if (response.IsRedirect)
-            {
-                Direction.Text = response.Meta;
+                    hyperlink.Inlines.Add(run);
+
+                    var paragraph = new Paragraph();
+                    paragraph.Inlines.Add(hyperlink);
+                    control.Blocks.Add(paragraph);
+                }
+                else if (l.StartsWith("###"))
+                {
+                    var paragraph = new Paragraph();
+                    var run = new Run();
+                    run.Text = l.Substring(3).TrimStart();
+                    paragraph.Inlines.Add(run);
+                    control.Blocks.Add(paragraph);
+                }
+                else if (l.StartsWith("##"))
+                {
+                    var paragraph = new Paragraph();
+                    var run = new Run();
+                    run.Text = l.Substring(2).TrimStart();
+                    paragraph.Inlines.Add(run);
+                    control.Blocks.Add(paragraph);
+                }
+                else if (l.StartsWith("#"))
+                {
+                    var paragraph = new Paragraph();
+                    var run = new Run();
+                    run.Text = l.Substring(1).TrimStart();
+                    paragraph.Inlines.Add(run);
+                    control.Blocks.Add(paragraph);
+                }
+                else if (l.StartsWith('>'))
+                {
+                    var paragraph = new Paragraph();
+                    var span = new Span();
+                    var run = new Run
+                    {
+                        Text = l
+                    };
+                    span.Inlines.Add(run);
+                    paragraph.Inlines.Add(span);
+                    control.Blocks.Add(paragraph);
+                }
+                else if (l.StartsWith('*'))
+                {
+                    var run = new Run
+                    {
+                        Text = $"\u2022 {l}"
+                    };
+
+                    var paragraph = new Paragraph();
+                    paragraph.Inlines.Add(run);
+                    control.Blocks.Add(paragraph);
+                }
+                else
+                {
+                    var paragraph = new Paragraph();
+                    var run = new Run
+                    {
+                        Text = l
+                    };
+                    paragraph.Inlines.Add(run);
+                    control.Blocks.Add(paragraph);
+                }
             }
         }
     }

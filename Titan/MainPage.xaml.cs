@@ -138,5 +138,10 @@ namespace Titan
                 TabRoot.SelectedIndex = tabToSelect;
             }
         }
+
+        internal void NavigateToUri(Uri uri)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
