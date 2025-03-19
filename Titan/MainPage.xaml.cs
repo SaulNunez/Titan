@@ -93,6 +93,51 @@ namespace Titan
             TabRoot.TabItems.Add(newTab);
         }
 
+        public void CreateHistoryTab()
+        {
+            // Create new tab.
+            var newTab = new TabViewItem();
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Clock };
+            newTab.Header = "History";
+
+            // The Content of a TabViewItem is often a frame which hosts a page.
+            Frame frame = new Frame();
+            newTab.Content = frame;
+            frame.Navigate(typeof(HistoryPage));
+
+            TabRoot.TabItems.Add(newTab);
+        }
+
+        public void CreateFavoriteTab()
+        {
+            // Create new tab.
+            var newTab = new TabViewItem();
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Favorite };
+            newTab.Header = "Favorites";
+
+            // The Content of a TabViewItem is often a frame which hosts a page.
+            Frame frame = new Frame();
+            newTab.Content = frame;
+            frame.Navigate(typeof(FavoritePage));
+
+            TabRoot.TabItems.Add(newTab);
+        }
+
+        public void CreateSettingsTab()
+        {
+            // Create new tab.
+            var newTab = new TabViewItem();
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Setting };
+            newTab.Header = "Settings";
+
+            // The Content of a TabViewItem is often a frame which hosts a page.
+            Frame frame = new Frame();
+            newTab.Content = frame;
+            frame.Navigate(typeof(SettingsPage));
+
+            TabRoot.TabItems.Add(newTab);
+        }
+
         private void CloseSelectedTabKeyboardAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
             // Only remove the selected tab if it can be closed.

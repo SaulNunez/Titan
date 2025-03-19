@@ -30,9 +30,15 @@ namespace Titan
             GoButton.Click += GoButton_Click;
             ShareButton.Click += ShareButton_Click;
             viewModel.pageContentChanged += Render;
+            OpenFavoriteButton.Click += OpenFavoriteButton_Click;
 
             dataTransferManager = DataTransferManager.GetForCurrentView();
             dataTransferManager.DataRequested += OnDataRequested;
+        }
+
+        private void OpenFavoriteButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)

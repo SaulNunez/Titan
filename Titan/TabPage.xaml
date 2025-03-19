@@ -21,6 +21,7 @@
                 <muxc:SplitButton Content="Favorites" RelativePanel.LeftOf="ShareButton" x:Name="FavoriteButton">
                     <muxc:SplitButton.Flyout>
                         <MenuFlyout Placement="RightEdgeAlignedTop">
+                            <MenuFlyoutItem  Icon="Favorite" Text="Open favorites" x:Name="OpenFavoriteButton" />
                         </MenuFlyout>
                     </muxc:SplitButton.Flyout>
                 </muxc:SplitButton>
