@@ -6,47 +6,32 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     x:Class="Titan.TabPage"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    mc:Ignorable="d">
 
     <Grid>
-        <StackPanel>
-            <RelativePanel>
+        <StackPanel Height="989">
+            <RelativePanel Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
                 <AppBarButton x:Name="BackButton" Icon="Back" Label="Back" LabelPosition="Collapsed" 
                               IsEnabled="{x:Bind viewModel.canGoBack}"/>
                 <AppBarButton Icon="Forward" Label="Forward" RelativePanel.RightOf="BackButton" x:Name="ForwardButton" LabelPosition="Collapsed" 
                               IsEnabled="{x:Bind viewModel.canGoForward}" />
-                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="ForwardButton" RelativePanel.LeftOf="GoButton" />
+                <AppBarButton Icon="Refresh" Label="Refresh" RelativePanel.RightOf="ForwardButton" x:Name="RefreshButton" LabelPosition="Collapsed" />
+                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="RefreshButton" RelativePanel.LeftOf="GoButton" />
                 <AppBarButton Icon="Forward" Label="Go"  RelativePanel.LeftOf="FavoriteButton" x:Name="GoButton" />
                 <muxc:SplitButton Content="Favorites" RelativePanel.LeftOf="ShareButton" x:Name="FavoriteButton">
-                        <muxc:SplitButton.Flyout>
-                            <MenuFlyout Placement="RightEdgeAlignedTop">
-                            </MenuFlyout>
-                        </muxc:SplitButton.Flyout>
-                    </muxc:SplitButton>
+                    <muxc:SplitButton.Flyout>
+                        <MenuFlyout Placement="RightEdgeAlignedTop">
+                        </MenuFlyout>
+                    </muxc:SplitButton.Flyout>
+                </muxc:SplitButton>
 
-                    <AppBarButton Icon="Share" Label="Share" x:Name="ShareButton" RelativePanel.AlignRightWithPanel="True" LabelPosition="Collapsed"/>
+                <AppBarButton Icon="Share" Label="Share" x:Name="ShareButton" RelativePanel.AlignRightWithPanel="True" LabelPosition="Collapsed"/>
             </RelativePanel>
-            <muxc:TwoPaneView
-                Grid.Row="1"
-                MinWideModeWidth="959"
-                MinTallModeHeight="863">
-                <muxc:TwoPaneView.Pane1>
-                    <StackPanel>
-                        <TextBlock Text="Table of Contents" />
-                        <muxc:TreeView />
-                    </StackPanel>
-                </muxc:TwoPaneView.Pane1>
-                <muxc:TwoPaneView.Pane2>
-                    <Grid>
-                        <ScrollViewer
-                            HorizontalScrollBarVisibility="Auto" 
-                            VerticalScrollBarVisibility="Auto">
-                            <RichTextBlock x:Name="Content"  />
-                        </ScrollViewer>
-                    </Grid>
-                </muxc:TwoPaneView.Pane2>
-            </muxc:TwoPaneView>
+            <ScrollViewer x:Name="ScrollContainer"
+                          VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled" >
+                <RichTextBlock x:Name="Content" Padding="16"/>
+            </ScrollViewer>
         </StackPanel>
     </Grid>
 </Page>

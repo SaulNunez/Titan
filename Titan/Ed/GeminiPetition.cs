@@ -18,8 +18,6 @@ namespace Titan.Ed
         {
             byte[] sendBuffer = Encoding.UTF8.GetBytes($"{url}\r\n");
 
-            try
-            {
                 var uri = new Uri(url);
                 using (var client = new TcpClient(uri.Authority, DEFAULT_GEMINI_PORT))
                 {
@@ -52,18 +50,34 @@ namespace Titan.Ed
                         throw new Exception("Connection had a problem");
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                var messageDialog = new MessageDialog(ex.Message);
-                await messageDialog.ShowAsync();
-                throw ex;
-            }
         }
 
-        public static bool ValidateServerCertificate(object sender, X509Certificate certificate,
-            X509Chain chain, SslPolicyErrors sslPolicyErrors)
+        public static bool ValidateServerCertificate(
+        object sender,
+        X509Certificate certificate,
+        X509Chain chain,
+        SslPolicyErrors sslPolicyErrors)
         {
+            //// If there are no SSL policy errors, the certificate is valid.
+            //if (sslPolicyErrors == SslPolicyErrors.None)
+            //{
+            //    return true;
+            //}
+
+            //Console.WriteLine($"Certificate error: {sslPolicyErrors}");
+
+            //// Optional: Manually check the chain's validity
+            //foreach (X509ChainStatus chainStatus in chain.ChainStatus)
+            //{
+            //    Console.WriteLine($"Chain status: {chainStatus.Status} - {chainStatus.StatusInformation}");
+            //    if (chainStatus.Status != X509ChainStatusFlags.NoError)
+            //    {
+            //        return false;
+            //    }
+            //}
+
+            //// In production, do NOT accept an invalid certificate.
+            //return false;
             return true;
         }
     }

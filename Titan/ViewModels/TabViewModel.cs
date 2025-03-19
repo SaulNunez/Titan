@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Titan.Ed;
 using Titan.Models;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -29,8 +30,16 @@ namespace Titan.ViewModels
 
         public async void LoadPage(string uri)
         {
-            var response = await GeminiPetition.Fetch(uri);
-            pageContentChanged?.Invoke(response);
+            try
+            {
+                var response = await GeminiPetition.Fetch(uri);
+                pageContentChanged?.Invoke(response);
+            }
+            catch (Exception ex)
+            {
+                var messageDialog = new MessageDialog(ex.Message);
+                await messageDialog.ShowAsync();
+            }
         }
 
         public delegate void PageContentChanged(GeminiResponse pageContent);

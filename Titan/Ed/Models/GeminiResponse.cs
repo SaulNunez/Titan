@@ -1,10 +1,24 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
+using Titan.Ed.Markup;
+using Titan.Ed.Markup.Body;
 
 namespace Titan.Models
 {
+    public enum ResponseStatus
+    {
+
+    }
+
     public class GeminiResponse
     {
+        private enum ProcessingStatus
+        {
+            NORMAL,
+            PREPROCESSED
+        }
         public GeminiResponse(string bodyContent)
         {
             var content = bodyContent.Split("\r\n", 2);
@@ -61,6 +75,48 @@ namespace Titan.Models
         public bool IsSuccess
         {
             get => Status[0] == '2';
+        }
+
+        public List<GeminiElement> BodyElements()
+        {
+            var elements = new List<GeminiElement>();
+
+            var processingStatus = ProcessingStatus.NORMAL;
+            var preprocessedBuffer = new StringBuilder();
+
+            foreach (var element in Body.Split("\n"))
+            {
+                Console.WriteLine(element);
+                switch (processingStatus)
+                {
+                    case ProcessingStatus.NORMAL:
+                        if (element.StartsWith("'''"))
+                        {
+                            preprocessedBuffer.Clear();
+                            processingStatus = ProcessingStatus.PREPROCESSED;
+                        }
+                        else if (element.StartsWith("=>"))
+                        {
+                            elements.Add(new LinkElement(element));
+                        }
+                        else
+                        {
+                            elements.Add(new TextElement(element));
+                        }
+                        break;
+                    case ProcessingStatus.PREPROCESSED:
+                        preprocessedBuffer.AppendLine(element);
+
+                        if (element.StartsWith("'''"))
+                        {
+                            elements.Add(new PreformatedElement(preprocessedBuffer.ToString()));
+                            processingStatus = ProcessingStatus.NORMAL;
+                        }
+                        break;
+                }
+            }
+
+            return elements;
         }
 
         public override string ToString()
