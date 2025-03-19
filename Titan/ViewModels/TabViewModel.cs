@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Titan.Ed;
 using Titan.Models;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -32,7 +33,8 @@ namespace Titan.ViewModels
         {
             try
             {
-                var response = await GeminiPetition.Fetch(uri);
+                var response = await Task.Run(() => GeminiPetition.Fetch(uri));
+
                 pageContentChanged?.Invoke(response);
             }
             catch (Exception ex)
