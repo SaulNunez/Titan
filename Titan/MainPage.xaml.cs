@@ -33,6 +33,7 @@ namespace Titan
             coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
 
             Window.Current.SetTitleBar(CustomDragRegion);
+            CreateTab();
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
@@ -56,7 +57,7 @@ namespace Titan
         {
             var newTab = new TabViewItem();
             newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
-            newTab.Header = "New Document";
+            newTab.Header = "New Tab";
 
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
@@ -74,10 +75,15 @@ namespace Titan
 
         private void NewTabKeyboardAccelerator_Invoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
         {
+            CreateTab();
+        }
+
+        private void CreateTab()
+        {
             // Create new tab.
             var newTab = new TabViewItem();
-            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Page };
-            newTab.Header = "New Document";
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
+            newTab.Header = "New Tab";
 
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
