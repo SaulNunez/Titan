@@ -29,12 +29,17 @@ namespace Titan.ViewModels
             get { return browsedPages[currentIndex]; }
         }
 
+        public void ReloadPage()
+        {
+            LoadPage(Direction);
+        }
+
         public async void LoadPage(string uri)
         {
             try
             {
                 var response = await Task.Run(() => GeminiPetition.Fetch(uri));
-
+                Direction = uri;
                 pageContentChanged?.Invoke(response);
             }
             catch (Exception ex)

@@ -2,6 +2,7 @@
 using Titan.Ed.Markup.Body;
 using Titan.Models;
 using Titan.ViewModels;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -18,25 +19,38 @@ namespace Titan
     public sealed partial class TabPage : Page
     {
         public TabViewModel viewModel = new TabViewModel();
+        private DataTransferManager dataTransferManager;
 
         public TabPage()
         {
             this.InitializeComponent();
             BackButton.Click += BackButton_Click;
             ForwardButton.Click += ForwardButton_Click;
+            RefreshButton.Click += RefreshButton_Click;
             GoButton.Click += GoButton_Click;
+            ShareButton.Click += ShareButton_Click;
             viewModel.pageContentChanged += Render;
+
+            dataTransferManager = DataTransferManager.GetForCurrentView();
+            dataTransferManager.DataRequested += OnDataRequested;
         }
 
-        private void GoButton_Click(object sender, RoutedEventArgs e)
+        private void OnDataRequested(DataTransferManager sender, DataRequestedEventArgs args)
         {
-            Navigate();
+            DataRequest request = args.Request;
+            request.Data.SetText("Check out this awesome UWP app!");
+            request.Data.SetWebLink(new Uri(viewModel.Direction));
+            request.Data.Properties.Title = "Share this link";
+            request.Data.Properties.Description = "This is an example of sharing in UWP.";
         }
 
-        private void ForwardButton_Click(object sender, RoutedEventArgs e)
-        {
-            viewModel.GoForward();
-        }
+        private void ShareButton_Click(object sender, RoutedEventArgs e) => DataTransferManager.ShowShareUI();
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e) => viewModel.ReloadPage();
+
+        private void GoButton_Click(object sender, RoutedEventArgs e) => Navigate();
+
+        private void ForwardButton_Click(object sender, RoutedEventArgs e) => viewModel.GoForward();
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
