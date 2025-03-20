@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -11,45 +12,53 @@ using Windows.UI.Popups;
 
 namespace Titan.Ed
 {
-    public static class GeminiPetition
+    public class GeminiPetition
     {
         public static readonly int DEFAULT_GEMINI_PORT = 1965;
-        public async static Task<GeminiResponse> Fetch(string url)
+
+        public Uri URL { get; private set; }
+        public GeminiPetition(Uri uri) 
+        { 
+            URL = uri;
+        }
+
+        public string Body() => $"{URL.AbsoluteUri}\r\n";
+
+        public async Task<GeminiResponse> Fetch()
         {
-                var uri = new Uri(url);
-                
-                byte[] sendBuffer = Encoding.UTF8.GetBytes($"{uri.AbsoluteUri} \r\n");
-                using (var client = new TcpClient(uri.Authority, DEFAULT_GEMINI_PORT))
+            try
+            {
+                string host = URL.Host;
+                int port = URL.Port > 0 ? URL.Port : 1965; // Default Gemini port
+
+                // Connect to the Gemini server
+                using (TcpClient client = new TcpClient())
                 {
-                    using (var stream = new SslStream(client.GetStream(), false,
-                    new RemoteCertificateValidationCallback(ValidateServerCertificate), null))
-                    {
-                        stream.AuthenticateAsClient(url);
-                        stream.Write(sendBuffer, 0, sendBuffer.Length);
+                    await client.ConnectAsync(host, port);
 
-                        if (stream.CanRead)
+                    // Secure the connection with TLS
+                    using (SslStream sslStream = new SslStream(client.GetStream(), false,
+                        new RemoteCertificateValidationCallback(ValidateServerCertificate)))
+                    { 
+                        await sslStream.AuthenticateAsClientAsync(host);
+
+                        byte[] requestBytes = Encoding.UTF8.GetBytes(Body());
+                        await sslStream.WriteAsync(requestBytes, 0, requestBytes.Length);
+                        await sslStream.FlushAsync();
+
+                        // Read the response
+                        using (StreamReader reader = new StreamReader(sslStream, Encoding.UTF8))
                         {
-                            byte[] recvBuffer = new byte[256];
-                            int bytesRead = 0;
-                            var responseContent = new StringBuilder();
-
-                            do
-                            {
-                                bytesRead = stream.Read(recvBuffer, 0, recvBuffer.Length);
-                                var msg = Encoding.UTF8.GetString(recvBuffer);
-                                responseContent.Append(msg);
-                                if (msg.IndexOf("<EOF>") != -1)
-                                {
-                                    break;
-                                }
-                            } while (bytesRead != 0);
-
-                            return new GeminiResponse(responseContent.ToString());
+                            var result = await reader.ReadToEndAsync();
+                            return new GeminiResponse(result);
                         }
-
-                        throw new Exception("Connection had a problem");
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public static bool ValidateServerCertificate(

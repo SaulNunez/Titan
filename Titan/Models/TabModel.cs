@@ -15,7 +15,8 @@ namespace Titan.Models
         public async void Browse(string url)
         {
             viewModel.isLoading = true;
-            var response = await GeminiPetition.Fetch(url);
+            var uri = new Uri(url);
+            var response = await new GeminiPetition(uri).Fetch();
             viewModel.isLoading = false;
 
             if (viewModel.currentIndex != viewModel.browsedPages.Count - 1)

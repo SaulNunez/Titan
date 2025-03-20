@@ -14,6 +14,7 @@ namespace Titan.Models
 
     public class GeminiResponse
     {
+        public readonly string Gemini_IME = "text/gemini";
         private enum ProcessingStatus
         {
             NORMAL,
@@ -86,6 +87,11 @@ namespace Titan.Models
         public List<GeminiElement> BodyElements()
         {
             var elements = new List<GeminiElement>();
+
+            if(Meta != Gemini_IME)
+            {
+                return elements;
+            }
 
             var processingStatus = ProcessingStatus.NORMAL;
             var preprocessedBuffer = new StringBuilder();

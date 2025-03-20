@@ -34,12 +34,13 @@ namespace Titan.ViewModels
             LoadPage(Direction);
         }
 
-        public async void LoadPage(string uri)
+        public async void LoadPage(string path)
         {
             try
             {
-                var response = await Task.Run(() => GeminiPetition.Fetch(uri));
-                Direction = uri;
+                var uri = new Uri(path);
+                var response = await Task.Run(() => new GeminiPetition(uri).Fetch());
+                Direction = path;
                 pageContentChanged?.Invoke(response);
             }
             catch (Exception ex)
