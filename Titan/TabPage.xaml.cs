@@ -8,6 +8,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using TextElement = Titan.Models.TextElement;
 
@@ -130,9 +131,11 @@ namespace Titan
                     else if (l is PreformatedElement)
                     {
                         var paragraph = new Paragraph();
+                        
                         var run = new Run
                         {
-                            Text = l.RawText
+                            Text = l.RawText,
+                            FontFamily = new FontFamily("Consolas")
                         };
                         paragraph.Inlines.Add(run);
                         Content.Blocks.Add(paragraph);
