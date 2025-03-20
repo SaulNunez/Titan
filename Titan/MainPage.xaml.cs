@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Titan.Models;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -62,7 +63,7 @@ namespace Titan
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
             newTab.Content = frame;
-            frame.Navigate(typeof(TabPage));
+            frame.Navigate(typeof(TabPage), new TabPageParameters { });
 
             sender.TabItems.Add(newTab);
         }
@@ -88,7 +89,10 @@ namespace Titan
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
             newTab.Content = frame;
-            frame.Navigate(typeof(TabPage));
+            frame.Navigate(typeof(TabPage), new TabPageParameters
+            {
+
+            });
 
             TabRoot.TabItems.Add(newTab);
         }
@@ -192,7 +196,19 @@ namespace Titan
 
         internal void NavigateToUri(Uri uri)
         {
-            throw new NotImplementedException();
+            var newTab = new TabViewItem();
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
+            newTab.Header = "New Tab";
+
+            // The Content of a TabViewItem is often a frame which hosts a page.
+            Frame frame = new Frame();
+            newTab.Content = frame;
+            frame.Navigate(typeof(TabPage), new TabPageParameters
+            {
+                PageUrl = uri.ToString()
+            });
+
+            TabRoot.TabItems.Add(newTab);
         }
     }
 }

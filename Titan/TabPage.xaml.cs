@@ -7,6 +7,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Navigation;
 using TextElement = Titan.Models.TextElement;
 
 // La plantilla de elemento Página en blanco está documentada en https://go.microsoft.com/fwlink/?LinkId=234238
@@ -34,6 +35,19 @@ namespace Titan
 
             dataTransferManager = DataTransferManager.GetForCurrentView();
             dataTransferManager.DataRequested += OnDataRequested;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            if(e.Parameter is TabPageParameters)
+            {
+                if((e.Parameter as TabPageParameters).PageUrl != null)
+                {
+                    viewModel.LoadPage((e.Parameter as TabPageParameters).PageUrl);
+                }
+            }
         }
 
         private void OpenFavoriteButton_Click(object sender, RoutedEventArgs e)
