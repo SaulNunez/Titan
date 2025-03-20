@@ -25,13 +25,18 @@ namespace Titan.Models
 
             //Get first line of the response
             var statusRegion = content[0];
-            var statusInformation = statusRegion.Split(' ');
+            var statusInformation = statusRegion.Split(' ', 2);
 
             if (statusInformation.Length >= 2)
             {
                 if(statusInformation[0].Length == 2)
                 {
                     Status = statusInformation[0];
+                }
+
+                if (Status.StartsWith("4") || Status.StartsWith("5"))
+                {
+                    ErrorMessage = statusInformation[1];
                 }
 
                 if(Encoding.UTF8.GetByteCount(statusInformation[1]) <= 1024)
@@ -76,6 +81,7 @@ namespace Titan.Models
         {
             get => Status[0] == '2';
         }
+        public string ErrorMessage { get; internal set; }
 
         public List<GeminiElement> BodyElements()
         {

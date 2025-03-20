@@ -101,6 +101,19 @@ namespace Titan
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 Content.Blocks.Clear();
+                if (req.Status.StartsWith("4") || req.Status.StartsWith("5"))
+                {
+                    var paragraph = new Paragraph();
+
+                    var run = new Run
+                    {
+                        Text = req.ErrorMessage,
+                        FontFamily = new FontFamily("Consolas")
+                    };
+                    paragraph.Inlines.Add(run);
+                    Content.Blocks.Add(paragraph);
+                }
+
                 var body = req.BodyElements();
 
                 var firstTitle = body.FirstOrDefault(item => (item is TextElement) ? (item as TextElement).Type == TextElement.TextType.Heading1 : false);

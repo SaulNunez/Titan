@@ -16,9 +16,9 @@ namespace Titan.Ed
         public static readonly int DEFAULT_GEMINI_PORT = 1965;
         public async static Task<GeminiResponse> Fetch(string url)
         {
-            byte[] sendBuffer = Encoding.UTF8.GetBytes($"{url}\r\n");
-
                 var uri = new Uri(url);
+                
+                byte[] sendBuffer = Encoding.UTF8.GetBytes($"{uri.AbsoluteUri} \r\n");
                 using (var client = new TcpClient(uri.Authority, DEFAULT_GEMINI_PORT))
                 {
                     using (var stream = new SslStream(client.GetStream(), false,
