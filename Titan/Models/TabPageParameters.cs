@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,5 +10,6 @@ namespace Titan.Models
     internal class TabPageParameters
     {
         public string PageUrl { get; set; }
+        public TabViewItem Tab { get; internal set; }
     }
 }

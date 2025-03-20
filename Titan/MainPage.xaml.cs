@@ -63,7 +63,9 @@ namespace Titan
             // The Content of a TabViewItem is often a frame which hosts a page.
             Frame frame = new Frame();
             newTab.Content = frame;
-            frame.Navigate(typeof(TabPage), new TabPageParameters { });
+            frame.Navigate(typeof(TabPage), new TabPageParameters {
+                Tab = newTab
+            });
 
             sender.TabItems.Add(newTab);
         }
@@ -91,7 +93,7 @@ namespace Titan
             newTab.Content = frame;
             frame.Navigate(typeof(TabPage), new TabPageParameters
             {
-
+                Tab = newTab
             });
 
             TabRoot.TabItems.Add(newTab);
@@ -205,7 +207,8 @@ namespace Titan
             newTab.Content = frame;
             frame.Navigate(typeof(TabPage), new TabPageParameters
             {
-                PageUrl = uri.ToString()
+                PageUrl = uri.ToString(),
+                Tab = newTab
             });
 
             TabRoot.TabItems.Add(newTab);

@@ -27,7 +27,7 @@ namespace Titan.Models
             }
             else if (text.StartsWith("#"))
             {
-                Type = TextType.Heading2;
+                Type = TextType.Heading1;
                 Text = text.Substring(1).Trim();
             }
             else

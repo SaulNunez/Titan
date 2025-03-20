@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Titan.Ed.Markup.Body;
 using Titan.Models;
 using Titan.ViewModels;
@@ -21,6 +22,7 @@ namespace Titan
     {
         public TabViewModel viewModel = new TabViewModel();
         private DataTransferManager dataTransferManager;
+        private TabPageParameters pageParameters;
 
         public TabPage()
         {
@@ -43,9 +45,10 @@ namespace Titan
 
             if(e.Parameter is TabPageParameters)
             {
-                if((e.Parameter as TabPageParameters).PageUrl != null)
+                pageParameters = e.Parameter as TabPageParameters;
+                if (pageParameters.PageUrl != null)
                 {
-                    viewModel.LoadPage((e.Parameter as TabPageParameters).PageUrl);
+                    viewModel.LoadPage(pageParameters.PageUrl);
                 }
             }
         }
@@ -97,7 +100,15 @@ namespace Titan
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 Content.Blocks.Clear();
-                foreach (var l in req.BodyElements())
+                var body = req.BodyElements();
+
+                var firstTitle = body.FirstOrDefault(item => (item is TextElement) ? (item as TextElement).Type == TextElement.TextType.Heading1 : false);
+                if (firstTitle != null && pageParameters != null && pageParameters.Tab != null)
+                {
+                    pageParameters.Tab.Header = (firstTitle as TextElement).Text;
+                }
+
+                foreach (var l in body)
                 {
                     if (l is LinkElement)
                     {
