@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Xml.Linq;
 using Titan.Ed.Markup;
 using Titan.Ed.Markup.Body;
+using Titan.Ed.Parsing;
 
 namespace Titan.Models
 {
@@ -14,12 +16,7 @@ namespace Titan.Models
 
     public class GeminiResponse
     {
-        public readonly string Gemini_IME = "text/gemini";
-        private enum ProcessingStatus
-        {
-            NORMAL,
-            PREPROCESSED
-        }
+        
         public GeminiResponse(string bodyContent)
         {
             var content = bodyContent.Split("\r\n", 2);
@@ -83,53 +80,6 @@ namespace Titan.Models
             get => Status[0] == '2';
         }
         public string ErrorMessage { get; internal set; }
-
-        public List<GeminiElement> BodyElements()
-        {
-            var elements = new List<GeminiElement>();
-
-            if(Meta != Gemini_IME)
-            {
-                return elements;
-            }
-
-            var processingStatus = ProcessingStatus.NORMAL;
-            var preprocessedBuffer = new StringBuilder();
-
-            foreach (var element in Body.Split("\n"))
-            {
-                Console.WriteLine(element);
-                switch (processingStatus)
-                {
-                    case ProcessingStatus.NORMAL:
-                        if (element.StartsWith("'''"))
-                        {
-                            preprocessedBuffer.Clear();
-                            processingStatus = ProcessingStatus.PREPROCESSED;
-                        }
-                        else if (element.StartsWith("=>"))
-                        {
-                            elements.Add(new LinkElement(element));
-                        }
-                        else
-                        {
-                            elements.Add(new TextElement(element));
-                        }
-                        break;
-                    case ProcessingStatus.PREPROCESSED:
-                        preprocessedBuffer.AppendLine(element);
-
-                        if (element.StartsWith("'''"))
-                        {
-                            elements.Add(new PreformatedElement(preprocessedBuffer.ToString()));
-                            processingStatus = ProcessingStatus.NORMAL;
-                        }
-                        break;
-                }
-            }
-
-            return elements;
-        }
 
         public override string ToString()
         {

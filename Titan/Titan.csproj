@@ -123,6 +123,7 @@
     <Compile Include="Ed\Markup\Body\PreformatedElement.cs" />
     <Compile Include="Ed\Markup\GeminiMarkup.cs" />
     <Compile Include="Ed\GeminiPetition.cs" />
+    <Compile Include="Ed\Parsing\ParseGemResponse.cs" />
     <Compile Include="FavoritePage.xaml.cs">
       <DependentUpon>FavoritePage.xaml</DependentUpon>
     </Compile>
