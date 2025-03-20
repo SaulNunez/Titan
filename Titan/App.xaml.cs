@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
@@ -124,6 +125,11 @@ namespace Titan
         protected override void OnFileActivated(FileActivatedEventArgs args)
         {
             base.OnFileActivated(args);
+            foreach (var file in args.Files)
+            {
+                mainPage.OpenFile(file as StorageFile);
+            }
+            Window.Current.Activate();
         }
 
         private void ExtendAcrylicIntoTitleBar()

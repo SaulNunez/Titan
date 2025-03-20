@@ -8,6 +8,7 @@ using Titan.Models;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -208,6 +209,24 @@ namespace Titan
             frame.Navigate(typeof(TabPage), new TabPageParameters
             {
                 PageUrl = uri.ToString(),
+                Tab = newTab
+            });
+
+            TabRoot.TabItems.Add(newTab);
+        }
+
+        internal void OpenFile(StorageFile storageFile)
+        {
+            var newTab = new TabViewItem();
+            newTab.IconSource = new Microsoft.UI.Xaml.Controls.SymbolIconSource() { Symbol = Symbol.Document };
+            newTab.Header = "New Tab";
+
+            // The Content of a TabViewItem is often a frame which hosts a page.
+            Frame frame = new Frame();
+            newTab.Content = frame;
+            frame.Navigate(typeof(TabPage), new TabPageParameters
+            {
+                File = storageFile,
                 Tab = newTab
             });
 

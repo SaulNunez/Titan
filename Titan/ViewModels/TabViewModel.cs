@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Titan.Ed;
 using Titan.Models;
+using Windows.Storage;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
@@ -15,33 +16,32 @@ namespace Titan.ViewModels
 {
     public class TabViewModel
     {
-        public string Name { get; set; }
-        public string Direction { get; set; }
-        public List<GeminiResponse> browsedPages = new List<GeminiResponse>();
+        public string Name 
+        { 
+            get => CurrentPage.Title; 
+        }
+        public string Address { get; set; }
+        public List<GemPage> browsedPages = new List<GemPage>();
         public int currentIndex = 0;
         public bool isLoading = true;
         public bool canGoBack = false;
         public bool canGoForward = false;
-        public string currentPageContent = string.Empty;
 
-        public GeminiResponse CurrentPage
+        public GemPage CurrentPage
         {
             get { return browsedPages[currentIndex]; }
         }
 
         public void ReloadPage()
         {
-            LoadPage(Direction);
+            LoadPage(Address);
         }
-
-        public async void LoadPage(string path)
+        public async void LoadFile(StorageFile path)
         {
             try
             {
-                var uri = new Uri(path);
-                var response = await Task.Run(() => new GeminiPetition(uri).Fetch());
-                Direction = path;
-                pageContentChanged?.Invoke(response);
+                var newPage = await FileGemPage.LoadAsync(path);
+                Address = path.Path;
             }
             catch (Exception ex)
             {
@@ -50,7 +50,22 @@ namespace Titan.ViewModels
             }
         }
 
-        public delegate void PageContentChanged(GeminiResponse pageContent);
+        public async void LoadPage(string path)
+        {
+            try
+            {
+                var uri = new Uri(path);
+                var newPage = await OnlineGemPage.LoadAsync(uri);
+                Address = path;
+            }
+            catch (Exception ex)
+            {
+                var messageDialog = new MessageDialog(ex.Message);
+                await messageDialog.ShowAsync();
+            }
+        }
+
+        public delegate void PageContentChanged(GemPage pageContent);
         public event PageContentChanged pageContentChanged;
 
 

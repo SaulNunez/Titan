@@ -124,6 +124,7 @@
     <Compile Include="Ed\Markup\GeminiMarkup.cs" />
     <Compile Include="Ed\GeminiPetition.cs" />
     <Compile Include="Ed\Parsing\ParseGemResponse.cs" />
+    <Compile Include="Ed\Parsing\ParseGemString.cs" />
     <Compile Include="FavoritePage.xaml.cs">
       <DependentUpon>FavoritePage.xaml</DependentUpon>
     </Compile>
@@ -137,7 +138,10 @@
     <Compile Include="Ed\Markup\Body\TextElement.cs" />
     <Compile Include="Ed\Markup\Body\LinkElement.cs" />
     <Compile Include="Models\Favorites.cs" />
+    <Compile Include="Models\FileGemPage.cs" />
+    <Compile Include="Models\GemPage.cs" />
     <Compile Include="Models\History.cs" />
+    <Compile Include="Models\OnlineGemPage.cs" />
     <Compile Include="Models\TabModel.cs" />
     <Compile Include="Models\TabPageParameters.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

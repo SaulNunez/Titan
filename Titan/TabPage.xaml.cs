@@ -44,12 +44,17 @@ namespace Titan
         {
             base.OnNavigatedTo(e);
 
-            if(e.Parameter is TabPageParameters)
+            if (e.Parameter is TabPageParameters)
             {
                 pageParameters = e.Parameter as TabPageParameters;
                 if (pageParameters.PageUrl != null)
                 {
                     viewModel.LoadPage(pageParameters.PageUrl);
+                }
+
+                if (pageParameters.File != null)
+                {
+                    viewModel.LoadFile(pageParameters.File);
                 }
             }
         }
@@ -63,7 +68,7 @@ namespace Titan
         {
             DataRequest request = args.Request;
             request.Data.SetText("Check out this awesome UWP app!");
-            request.Data.SetWebLink(new Uri(viewModel.Direction));
+            request.Data.SetWebLink(new Uri(viewModel.Address));
             request.Data.Properties.Title = "Share this link";
             request.Data.Properties.Description = "This is an example of sharing in UWP.";
         }
@@ -96,82 +101,79 @@ namespace Titan
             viewModel.LoadPage(Direction.Text);
         }
 
-        private async void Render(GeminiResponse req)
+        private void Render(GemPage req)
         {
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+
+            Content.Blocks.Clear();
+            if (req is OnlineGemPage)
             {
-                Content.Blocks.Clear();
-                if (req.Status.StartsWith("4") || req.Status.StartsWith("5"))
+                var page = (OnlineGemPage)req;
+                if (page.Response.Status.StartsWith("4") || page.Response.Status.StartsWith("5"))
                 {
                     var paragraph = new Paragraph();
 
                     var run = new Run
                     {
-                        Text = req.ErrorMessage,
+                        Text = page.Response.ErrorMessage,
                         FontFamily = new FontFamily("Consolas")
                     };
                     paragraph.Inlines.Add(run);
                     Content.Blocks.Add(paragraph);
                 }
+                return;
+            }
 
-                var body = req.BodyElements();
+            pageParameters.Tab.Header = req.Title;
 
-                var firstTitle = body.FirstOrDefault(item => (item is TextElement) ? (item as TextElement).Type == TextElement.TextType.Heading1 : false);
-                if (firstTitle != null && pageParameters != null && pageParameters.Tab != null)
+            foreach (var l in req.Layout)
+            {
+                if (l is LinkElement)
                 {
-                    pageParameters.Tab.Header = (firstTitle as TextElement).Text;
+                    var hyperlink = new Hyperlink();
+                    if (Uri.IsWellFormedUriString((l as LinkElement).Url, UriKind.Absolute))
+                    {
+                        hyperlink.NavigateUri = new Uri((l as LinkElement).Url);
+                    }
+
+                    var run = new Run();
+                    run.Text = (l as LinkElement).UserFriendlyLinkName;
+
+                    hyperlink.Inlines.Add(run);
+
+                    var paragraph = new Paragraph();
+                    paragraph.Inlines.Add(hyperlink);
+                    Content.Blocks.Add(paragraph);
                 }
-
-                foreach (var l in body)
+                else if (l is PreformatedElement)
                 {
-                    if (l is LinkElement)
-                    {
-                        var hyperlink = new Hyperlink();
-                        if (Uri.IsWellFormedUriString((l as LinkElement).Url, UriKind.Absolute))
-                        {
-                            hyperlink.NavigateUri = new Uri((l as LinkElement).Url);
-                        }
+                    var paragraph = new Paragraph();
 
-                        var run = new Run();
-                        run.Text = (l as LinkElement).UserFriendlyLinkName;
-
-                        hyperlink.Inlines.Add(run);
-
-                        var paragraph = new Paragraph();
-                        paragraph.Inlines.Add(hyperlink);
-                        Content.Blocks.Add(paragraph);
-                    }
-                    else if (l is PreformatedElement)
+                    var run = new Run
                     {
-                        var paragraph = new Paragraph();
-                        
-                        var run = new Run
-                        {
-                            Text = l.RawText,
-                            FontFamily = new FontFamily("Consolas")
-                        };
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
-                    }
-                    else if (l is TextElement)
+                        Text = l.RawText,
+                        FontFamily = new FontFamily("Consolas")
+                    };
+                    paragraph.Inlines.Add(run);
+                    Content.Blocks.Add(paragraph);
+                }
+                else if (l is TextElement)
+                {
+                    var paragraph = new Paragraph();
+                    var run = new Run
                     {
-                        var paragraph = new Paragraph();
-                        var run = new Run
-                        {
-                            Text = (l as TextElement).Type == TextElement.TextType.ListItem ? $"\u2022 {(l as TextElement).Text}" : (l as TextElement).Text
-                        };
-                        switch ((l as TextElement).Type)
-                        {
-                            case TextElement.TextType.Heading3:
-                                break;
-                            case TextElement.TextType.Heading2:
-                                break;
-                            case TextElement.TextType.Heading1:
-                                break;
-                        }
-                        paragraph.Inlines.Add(run);
-                        Content.Blocks.Add(paragraph);
+                        Text = (l as TextElement).Type == TextElement.TextType.ListItem ? $"\u2022 {(l as TextElement).Text}" : (l as TextElement).Text
+                    };
+                    switch ((l as TextElement).Type)
+                    {
+                        case TextElement.TextType.Heading3:
+                            break;
+                        case TextElement.TextType.Heading2:
+                            break;
+                        case TextElement.TextType.Heading1:
+                            break;
                     }
+                    paragraph.Inlines.Add(run);
+                    Content.Blocks.Add(paragraph);
                 }
             });
         }

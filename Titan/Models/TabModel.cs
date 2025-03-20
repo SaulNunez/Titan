@@ -12,7 +12,7 @@ namespace Titan.Models
     {
         private TabViewModel viewModel;
 
-        public async void Browse(string url)
+        public async void BrowseUrl(string url)
         {
             viewModel.isLoading = true;
             var uri = new Uri(url);
