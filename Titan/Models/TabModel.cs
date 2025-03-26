@@ -19,29 +19,29 @@ namespace Titan.Models
             var response = await new GeminiPetition(uri).Fetch();
             viewModel.isLoading = false;
 
-            if (viewModel.currentIndex != viewModel.browsedPages.Count - 1)
+            if (viewModel.CurrentIndex != viewModel.browser.Count - 1)
             {
-                viewModel.browsedPages.RemoveRange(viewModel.currentIndex + 1, viewModel.browsedPages.Count - 1);
+                viewModel.browser.RemoveRange(viewModel.CurrentIndex + 1, viewModel.browser.Count - 1);
             }
 
-            viewModel.browsedPages.Add(response);
-            viewModel.currentIndex = viewModel.browsedPages.Count - 1;
+            viewModel.browser.Add(response);
+            viewModel.CurrentIndex = viewModel.browser.Count - 1;
         }
 
         public void GoBack()
         {
-            if (viewModel.currentIndex > 0)
-                viewModel.currentIndex--;
+            if (viewModel.CurrentIndex > 0)
+                viewModel.CurrentIndex--;
 
-            viewModel.canGoForward = true;
+            viewModel.CanGoForward = true;
         }
 
         public void GoForward()
         {
-            if (viewModel.currentIndex < viewModel.browsedPages.Count - 1)
-                viewModel.currentIndex++;
+            if (viewModel.CurrentIndex < viewModel.browser.Count - 1)
+                viewModel.CurrentIndex++;
 
-            viewModel.canGoBack = true;
+            viewModel.CanGoBack = true;
         }
     }
 }

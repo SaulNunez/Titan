@@ -12,11 +12,12 @@
         <StackPanel Height="989">
             <RelativePanel Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}">
                 <AppBarButton x:Name="BackButton" Icon="Back" Label="Back" LabelPosition="Collapsed" 
-                              IsEnabled="{x:Bind viewModel.canGoBack}"/>
+                              IsEnabled="{x:Bind viewModel.CanGoBack}" Command="{x:Bind viewModel.GoBackCommand}" />
                 <AppBarButton Icon="Forward" Label="Forward" RelativePanel.RightOf="BackButton" x:Name="ForwardButton" LabelPosition="Collapsed" 
-                              IsEnabled="{x:Bind viewModel.canGoForward}" />
-                <AppBarButton Icon="Refresh" Label="Refresh" RelativePanel.RightOf="ForwardButton" x:Name="RefreshButton" LabelPosition="Collapsed" />
-                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="RefreshButton" RelativePanel.LeftOf="GoButton" />
+                              IsEnabled="{x:Bind viewModel.CanGoForward}" Command="{x:Bind viewModel.GoForwardCommand}" />
+                <AppBarButton Icon="Refresh" Label="Refresh" RelativePanel.RightOf="ForwardButton" x:Name="RefreshButton" LabelPosition="Collapsed"
+                              Command="{x:Bind viewModel.RefreshCommand}" />
+                <TextBox x:Name="Direction" AcceptsReturn="True" RelativePanel.RightOf="RefreshButton" RelativePanel.LeftOf="GoButton" Text="{x:Bind viewModel.Address}" />
                 <AppBarButton Icon="Forward" Label="Go"  RelativePanel.LeftOf="FavoriteButton" x:Name="GoButton" />
                 <muxc:SplitButton Content="Favorites" RelativePanel.LeftOf="ShareButton" x:Name="FavoriteButton">
                     <muxc:SplitButton.Flyout>
@@ -31,7 +32,8 @@
             <ScrollViewer x:Name="ScrollContainer"
                           VerticalScrollBarVisibility="Auto"
                             HorizontalScrollBarVisibility="Disabled" >
-                <RichTextBlock x:Name="Content" Padding="16"/>
+                <RichTextBlock x:Name="Content" Padding="16">
+                </RichTextBlock>
             </ScrollViewer>
         </StackPanel>
     </Grid>

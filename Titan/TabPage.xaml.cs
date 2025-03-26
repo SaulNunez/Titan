@@ -28,12 +28,9 @@ namespace Titan
         public TabPage()
         {
             this.InitializeComponent();
-            BackButton.Click += BackButton_Click;
-            ForwardButton.Click += ForwardButton_Click;
             RefreshButton.Click += RefreshButton_Click;
             GoButton.Click += GoButton_Click;
             ShareButton.Click += ShareButton_Click;
-            viewModel.pageContentChanged += Render;
             OpenFavoriteButton.Click += OpenFavoriteButton_Click;
 
             dataTransferManager = DataTransferManager.GetForCurrentView();
@@ -79,12 +76,6 @@ namespace Titan
 
         private void GoButton_Click(object sender, RoutedEventArgs e) => Navigate();
 
-        private void ForwardButton_Click(object sender, RoutedEventArgs e) => viewModel.GoForward();
-
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            viewModel.GoBack();
-        }
 
         private void Navigate()
         {
@@ -175,7 +166,7 @@ namespace Titan
                     paragraph.Inlines.Add(run);
                     Content.Blocks.Add(paragraph);
                 }
-            });
+            }
         }
     }
 }
