@@ -22,5 +22,4 @@ namespace Titan.Parsing
             return await response.Body.ParseGeminiElements();
         }
     }
-    }
 }
