@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:custom="using:Titan.CustomControls" xmlns:viewmodels="using:Titan.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:TabViewModel}"
     x:Class="Titan.TabPage"
     mc:Ignorable="d">
 
@@ -29,12 +30,8 @@
 
                 <AppBarButton Icon="Share" Label="Share" x:Name="ShareButton" RelativePanel.AlignRightWithPanel="True" LabelPosition="Collapsed"/>
             </RelativePanel>
-            <ScrollViewer x:Name="ScrollContainer"
-                          VerticalScrollBarVisibility="Auto"
-                            HorizontalScrollBarVisibility="Disabled" >
-                <RichTextBlock x:Name="Content" Padding="16">
-                </RichTextBlock>
-            </ScrollViewer>
+            <ProgressRing IsActive="{x:Bind viewModel.PageTask.IsCompleted.Equals(x:False)}" />
+            <custom:GemTextBox GemText="{Binding viewModel.PageTask.Result}"  />
         </StackPanel>
     </Grid>
 </Page>

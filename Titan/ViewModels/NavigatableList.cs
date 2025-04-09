@@ -57,7 +57,7 @@ namespace Titan.ViewModels
             if(_currentIndex == browsedPages.Count - 1 || browsedPages.Count == 0)
             {
                 browsedPages.Add(item);
-                _currentIndex++;
+                _currentIndex = browsedPages.Count - 1;
                 CanGoForward = false;
             }
             else

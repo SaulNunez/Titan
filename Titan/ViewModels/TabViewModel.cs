@@ -22,6 +22,12 @@ namespace Titan.ViewModels
 
         private TaskNotifier<GemPage> requestPageTask;
 
+        public Task<GemPage> PageTask
+        {
+            get => requestPageTask;
+            set => SetPropertyAndNotifyOnCompletion(ref requestPageTask, value);
+        }
+
         private bool _canGoBack = false;
         private bool _canGoForward = false;
 
@@ -55,14 +61,14 @@ namespace Titan.ViewModels
             //LoadPage(Address);
         }
 
-        private async void LoadFile(StorageFile path)
+        public async void LoadFile(StorageFile path)
         {
             try
             {
-                var newPage = await FileGemPage.LoadAsync(path);
-                browser.Push(newPage);
-                Address = path.Path;
+                PageTask =  FileGemPage.LoadAsync(path).ContinueWith(task => (GemPage)task.Result);
 
+                browser.Push(await PageTask);
+                Address = path.Path;
             }
             catch (Exception ex)
             {
@@ -71,19 +77,22 @@ namespace Titan.ViewModels
             }
         }
 
-        private async void LoadPage(string path)
+        public async void LoadPage(string path)
         {
             try
             {
                 var uri = new Uri(path);
-                var newPage = await OnlineGemPage.LoadAsync(uri);
-                browser.Push(newPage);
+                PageTask = OnlineGemPage.LoadAsync(uri).ContinueWith(task => (GemPage)task.Result);
+                browser.Push(await PageTask);
                 Address = path;
+
+                var messageDialog = new MessageDialog("Loaded");
+                await messageDialog.ShowAsync();
             }
             catch (Exception ex)
             {
                 var messageDialog = new MessageDialog(ex.Message);
-                await messageDialog.ShowAsync();
+            await messageDialog.ShowAsync();
             }
         }
 

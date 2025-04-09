@@ -119,6 +119,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\GemTextBox.xaml.cs">
+      <DependentUpon>GemTextBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ed\Markup\Body\GeminiElement.cs" />
     <Compile Include="Ed\Markup\Body\PreformatedElement.cs" />
     <Compile Include="Ed\Markup\GeminiMarkup.cs" />
@@ -128,6 +131,11 @@
     <Compile Include="FavoritePage.xaml.cs">
       <DependentUpon>FavoritePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GemPageConverter.cs" />
+    <Compile Include="GemTextBox.xaml.cs">
+      <DependentUpon>GemTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GemTitleConverter.cs" />
     <Compile Include="HistoryPage.xaml.cs">
       <DependentUpon>HistoryPage.xaml</DependentUpon>
     </Compile>
@@ -173,7 +181,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControls\GemTextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="FavoritePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GemTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
